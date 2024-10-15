@@ -3,6 +3,8 @@
 #include <EnableInterrupt.h>
 #include "functions.h"
 
+#define ROUND_TIME 10000
+
 enum State
 {
   INIT,      // game start screen
@@ -19,7 +21,8 @@ volatile bool led2State;
 volatile bool led3State;
 volatile bool led4State;
 int difficulty;
-State state = INIT;
+long turnStartTime;
+State state = NEWROUND;
 
 void setup()
 {
@@ -59,11 +62,38 @@ void loop()
   case NEWROUND:
     // TODO randomize new turn number
     // TODO calculate new turn max time
+    led1State = false;
+    led2State = false;
+    led3State = false;
+    led4State = false;
+    digitalWrite(LED_1, LOW);
+    digitalWrite(LED_2, LOW);
+    digitalWrite(LED_3, LOW);
+    digitalWrite(LED_4, LOW);
+    turnStartTime = millis();
+    state = SELECTION;
     break;
   case SELECTION:
     // TODO display current turn number to guess
     // TODO player selects leds with buttons
     // TODO if time ended check inputs
+    if (millis() - turnStartTime > ROUND_TIME)
+    {
+      state = NEWROUND;
+    }
+    else
+    {
+      noInterrupts();
+      bool curLed1State = led1State;
+      bool curLed2State = led2State;
+      bool curLed3State = led3State;
+      bool curLed4State = led4State;
+      interrupts();
+      digitalWrite(LED_1, led1State);
+      digitalWrite(LED_2, led2State);
+      digitalWrite(LED_3, led3State);
+      digitalWrite(LED_4, led4State);
+    }
     break;
   case CHECK:
     // TODO check player's inputs
