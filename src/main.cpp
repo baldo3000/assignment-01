@@ -49,58 +49,93 @@ void loop()
   switch (state)
   {
   case INIT:
-    // TODO display start message
-    // TODO pulse red led
+    init();
     break;
   case SLEEP:
-    // TODO goin sleep
+    sleep();
     break;
   case START:
-    // TODO display game start screen
-    // TODO starts round 1
+    start();
     break;
   case NEWROUND:
-    // TODO randomize new turn number
-    // TODO calculate new turn max time
-    led1State = false;
-    led2State = false;
-    led3State = false;
-    led4State = false;
-    digitalWrite(LED_1, LOW);
-    digitalWrite(LED_2, LOW);
-    digitalWrite(LED_3, LOW);
-    digitalWrite(LED_4, LOW);
-    turnStartTime = millis();
-    state = SELECTION;
+    newRound();
     break;
   case SELECTION:
-    // TODO display current turn number to guess
-    // TODO player selects leds with buttons
-    // TODO if time ended check inputs
-    if (millis() - turnStartTime > ROUND_TIME)
-    {
-      state = NEWROUND;
-    }
-    else
-    {
-      noInterrupts();
-      bool curLed1State = led1State;
-      bool curLed2State = led2State;
-      bool curLed3State = led3State;
-      bool curLed4State = led4State;
-      interrupts();
-      digitalWrite(LED_1, led1State);
-      digitalWrite(LED_2, led2State);
-      digitalWrite(LED_3, led3State);
-      digitalWrite(LED_4, led4State);
-    }
+    selection();
     break;
   case CHECK:
-    // TODO check player's inputs
+    check();
     break;
   case GAMEOVER:
-    // TODO display game over message and score
-    // TODO resets game
+    gameOver();
     break;
   }
+}
+
+void init()
+{
+  // TODO display start message
+  // TODO pulse red led
+}
+
+void sleep()
+{
+  // TODO goin sleep
+}
+
+void start()
+{
+  // TODO display game start screen
+  // TODO starts round 1
+}
+
+void newRound()
+{
+  // TODO randomize new turn number
+  // TODO calculate new turn max time
+  led1State = false;
+  led2State = false;
+  led3State = false;
+  led4State = false;
+  digitalWrite(LED_1, LOW);
+  digitalWrite(LED_2, LOW);
+  digitalWrite(LED_3, LOW);
+  digitalWrite(LED_4, LOW);
+  turnStartTime = millis();
+  state = SELECTION;
+}
+
+void selection()
+{
+  // TODO display current turn number to guess
+  // DONE player selects leds with buttons
+  // DONE if time ended check inputs
+  if (millis() - turnStartTime > ROUND_TIME)
+  {
+    state = NEWROUND;
+  }
+  else
+  {
+    noInterrupts();
+    bool curLed1State = led1State;
+    bool curLed2State = led2State;
+    bool curLed3State = led3State;
+    bool curLed4State = led4State;
+    interrupts();
+    digitalWrite(LED_1, led1State);
+    digitalWrite(LED_2, led2State);
+    digitalWrite(LED_3, led3State);
+    digitalWrite(LED_4, led4State);
+  }
+}
+
+void check()
+{
+  // TODO check player's inputs
+}
+
+void gameOver()
+{
+  // TODO display game over message and score
+  // TODO resets game
 }

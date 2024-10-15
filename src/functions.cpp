@@ -1,10 +1,11 @@
 #include <Arduino.h>
+#include <limits.h>
 #include "functions.h"
 
-long prevts1 = millis();
-long prevts2 = millis();
-long prevts3 = millis();
-long prevts4 = millis();
+long prevts1 = LONG_MIN;
+long prevts2 = LONG_MIN;
+long prevts3 = LONG_MIN;
+long prevts4 = LONG_MIN;
 
 extern volatile bool led1State;
 extern volatile bool led2State;
