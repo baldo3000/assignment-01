@@ -1,11 +1,10 @@
 #include <Arduino.h>
-#include <limits.h>
 #include "functions.h"
 
-long prevts1 = LONG_MIN;
-long prevts2 = LONG_MIN;
-long prevts3 = LONG_MIN;
-long prevts4 = LONG_MIN;
+long prevts1 = 0;
+long prevts2 = 0;
+long prevts3 = 0;
+long prevts4 = 0;
 
 extern volatile bool led1State;
 extern volatile bool led2State;
@@ -51,7 +50,7 @@ void button4_handler()
         led4State = !led4State;
     }
 }
-int difficulty_changer()
+int selectedDifficulty()
 {
     /*
    int range = 255;

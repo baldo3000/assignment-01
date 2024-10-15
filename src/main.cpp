@@ -1,13 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <Arduino.h>
-
 #include <EnableInterrupt.h>
 #include "functions.h"
 
-#define ROUND_TIME 10000
+#define ROUND_TIME 5000
 
 enum State
 {
-  INIT,      // game start screen
+  HOME,      // game start screen
   SLEEP,     // board went to sleep after inactivity
   START,     // game started
   NEWROUND,  // configuration for next round
@@ -21,16 +23,18 @@ volatile bool led2State;
 volatile bool led3State;
 volatile bool led4State;
 int difficulty;
+int currentRound;
+int numberToGuess;
 long turnStartTime;
-State state = NEWROUND;
+State state = START;
 
 void setup()
 {
   Serial.begin(9600);
-  pinMode(LED_1, OUTPUT);
-  pinMode(LED_2, OUTPUT);
-  pinMode(LED_3, OUTPUT);
-  pinMode(LED_4, OUTPUT);
+  pinMode(LED_1_PIN, OUTPUT);
+  pinMode(LED_2_PIN, OUTPUT);
+  pinMode(LED_3_PIN, OUTPUT);
+  pinMode(LED_4_PIN, OUTPUT);
   pinMode(LED_RED, OUTPUT);
   pinMode(BUTTON_1, INPUT);
   pinMode(BUTTON_2, INPUT);
@@ -44,12 +48,94 @@ void setup()
   difficulty = 1;
 }
 
+void home()
+{
+  // TODO display start message
+  // TODO pulse red led
+}
+
+void sleep()
+{
+  // TODO goin sleep
+}
+
+void start()
+{
+  // TODO display game start screen
+  // DONE starts round 1
+  currentRound = 1;
+  difficulty = selectedDifficulty();
+  state = NEWROUND;
+}
+
+void newRound()
+{
+  // TODO randomize new turn number
+  // TODO calculate new turn max time
+  srand((time(NULL)));
+  numberToGuess = rand() % 16;
+  led1State = false;
+  led2State = false;
+  led3State = false;
+  led4State = false;
+  digitalWrite(LED_1_PIN, LOW);
+  digitalWrite(LED_2_PIN, LOW);
+  digitalWrite(LED_3_PIN, LOW);
+  digitalWrite(LED_4_PIN, LOW);
+  turnStartTime = millis();
+  state = SELECTION;
+}
+
+void selection()
+{
+  // TODO display current turn number to guess
+  // DONE player selects leds with buttons
+  // DONE if time ended check inputs
+  if (millis() - turnStartTime > ROUND_TIME)
+  {
+    state = CHECK;
+  }
+  else
+  {
+    noInterrupts();
+    bool curLed1State = led1State;
+    bool curLed2State = led2State;
+    bool curLed3State = led3State;
+    bool curLed4State = led4State;
+    interrupts();
+    digitalWrite(LED_1_PIN, curLed1State);
+    digitalWrite(LED_2_PIN, curLed2State);
+    digitalWrite(LED_3_PIN, curLed3State);
+    digitalWrite(LED_4_PIN, curLed4State);
+  }
+}
+
+void check()
+{
+  // TODO check player's inputs
+  noInterrupts();
+  bool curLed1State = led1State;
+  bool curLed2State = led2State;
+  bool curLed3State = led3State;
+  bool curLed4State = led4State;
+  interrupts();
+  int guess = curLed1State * LED_1_VALUE + curLed2State * LED_2_VALUE + curLed3State * LED_3_VALUE + curLed4State * LED_4_VALUE;
+  Serial.println(guess);
+  state = NEWROUND;
+}
+
+void gameOver()
+{
+  // TODO display game over message and score
+  // TODO resets game
+}
+
 void loop()
 {
   switch (state)
   {
-  case INIT:
-    init();
+  case HOME:
+    home();
     break;
   case SLEEP:
     sleep();
@@ -70,72 +156,4 @@ void loop()
     gameOver();
     break;
   }
-}
-
-void init()
-{
-  // TODO display start message
-  // TODO pulse red led
-}
-
-void sleep()
-{
-  // TODO goin sleep
-}
-
-void start()
-{
-  // TODO display game start screen
-  // TODO starts round 1
-}
-
-void newRound()
-{
-  // TODO randomize new turn number
-  // TODO calculate new turn max time
-  led1State = false;
-  led2State = false;
-  led3State = false;
-  led4State = false;
-  digitalWrite(LED_1, LOW);
-  digitalWrite(LED_2, LOW);
-  digitalWrite(LED_3, LOW);
-  digitalWrite(LED_4, LOW);
-  turnStartTime = millis();
-  state = SELECTION;
-}
-
-void selection()
-{
-  // TODO display current turn number to guess
-  // DONE player selects leds with buttons
-  // DONE if time ended check inputs
-  if (millis() - turnStartTime > ROUND_TIME)
-  {
-    state = NEWROUND;
-  }
-  else
-  {
-    noInterrupts();
-    bool curLed1State = led1State;
-    bool curLed2State = led2State;
-    bool curLed3State = led3State;
-    bool curLed4State = led4State;
-    interrupts();
-    digitalWrite(LED_1, led1State);
-    digitalWrite(LED_2, led2State);
-    digitalWrite(LED_3, led3State);
-    digitalWrite(LED_4, led4State);
-  }
-}
-
-void check()
-{
-  // TODO check player's inputs
-}
-
-void gameOver()
-{
-  // TODO display game over message and score
-  // TODO resets game
 }
