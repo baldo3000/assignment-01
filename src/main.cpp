@@ -5,7 +5,7 @@
 #include <EnableInterrupt.h>
 #include "functions.h"
 
-#define ROUND_TIME 5000
+
 
 enum State
 {
@@ -26,6 +26,7 @@ int difficulty;
 int currentRound;
 int numberToGuess;
 long turnStartTime;
+int roundTime;
 State state = HOME;
 void setup()
 {
@@ -108,6 +109,7 @@ void newRound()
   Serial.print(numberToGuess);
   Serial.println(" to binary using the buttons 1-4");
   turnStartTime = millis();
+  roundTime = timerCalculator(difficulty, currentRound);
   state = SELECTION;
 }
 
@@ -116,7 +118,7 @@ void selection()
   // TODO display current turn number to guess
   // DONE player selects leds with buttons
   // DONE if time ended check inputs
-  if (millis() - turnStartTime > ROUND_TIME)
+  if (millis() - turnStartTime > roundTime)
   {
     state = CHECK;
   }

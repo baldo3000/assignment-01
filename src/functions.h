@@ -17,12 +17,13 @@
 #define BUTTON_4 8
 #define DEBOUNCE_TIME 20
 #define NUMBER_OF_DIFFICULTIES 4
-
+#define ROUND_TIME 40000
 void button1_handler();
 void button2_handler();
 void button3_handler();
 void button4_handler();
 int selectedDifficulty();
 int scoreCalculator(int time, int level);
+int timerCalculator(int difficulty, int level);
 
 #endif

@@ -66,3 +66,6 @@ int scoreCalculator(int time, int level)
 {
     return level * level * time;
 }
+int timerCalculator(int difficulty, int level){
+    return  ROUND_TIME / difficulty / (1+level/5);
+}
