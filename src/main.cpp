@@ -7,6 +7,11 @@
 
 
 
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4); 
+
+
+
+
 enum State
 {
   HOME,      // game start screen
@@ -27,6 +32,7 @@ int currentRound;
 int numberToGuess;
 long turnStartTime;
 int roundTime;
+int score;
 State state = HOME;
 void setup()
 {
@@ -47,6 +53,9 @@ void setup()
   enableInterrupt(BUTTON_4, button4_handler, FALLING);
   difficulty = 1;
   srand((time(NULL)));
+  
+  lcd.init();
+  lcd.backlight();
 }
 
 void reset()
@@ -65,7 +74,7 @@ void reset()
 
 void home()
 {
-  // TODO display start message
+  welcomeMessage(lcd);
   // TODO pulse red led
   // TODO start when a button is clicked
   noInterrupts();
@@ -87,10 +96,14 @@ void sleep()
 
 void start()
 {
-  // TODO display game start screen
+  
+  
+  
   // DONE starts round 1
   currentRound = 0;
+  score = 0;
   difficulty = selectedDifficulty();
+  startMessage(lcd, difficulty);
   Serial.print("Game started with difficulty ");
   Serial.println(difficulty);
   state = NEWROUND;
@@ -98,11 +111,14 @@ void start()
 
 void newRound()
 {
+
+  
   // TODO randomize new turn number
   // TODO calculate new turn max time
   currentRound++;
   numberToGuess = rand() % 16;
   reset();
+  goMessage(lcd, numberToGuess, currentRound);
   Serial.print("Round ");
   Serial.print(currentRound);
   Serial.print(" ! Convert number ");
@@ -115,7 +131,7 @@ void newRound()
 
 void selection()
 {
-  // TODO display current turn number to guess
+ 
   // DONE player selects leds with buttons
   // DONE if time ended check inputs
   if (millis() - turnStartTime > roundTime)
@@ -150,6 +166,7 @@ void check()
   if (guess == numberToGuess)
   {
     Serial.println("Correct number");
+    score += scoreCalculator(1, currentRound);
     state = NEWROUND;
   }
   else
@@ -161,8 +178,9 @@ void check()
 
 void gameOver()
 {
-  // TODO display game over message and score
+  gameOver(lcd, score);
   // TODO resets game
+
   Serial.println("Game over!");
   reset();
   state = HOME;
