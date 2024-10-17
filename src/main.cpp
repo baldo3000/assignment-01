@@ -122,7 +122,7 @@ void selection()
 
   // DONE player selects leds with buttons
   // DONE if time ended check inputs
-  if (millis() - turnStartTime > roundTime)
+  if (millis() - turnStartTime > 10000)
   {
     state = CHECK;
   }

@@ -2,20 +2,20 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#define LED_1_PIN 9
-#define LED_2_PIN 10
-#define LED_3_PIN 11
-#define LED_4_PIN 12
+#define LED_1_PIN 4
+#define LED_2_PIN 6
+#define LED_3_PIN 7
+#define LED_4_PIN 8
 #define LED_1_VALUE 8
 #define LED_2_VALUE 4
 #define LED_3_VALUE 2
 #define LED_4_VALUE 1
 #define POTENTIOMETER A0
-#define LED_RED 2
-#define BUTTON_1 5
-#define BUTTON_2 6
-#define BUTTON_3 7
-#define BUTTON_4 8
+#define LED_RED 5
+#define BUTTON_1 9
+#define BUTTON_2 10
+#define BUTTON_3 11
+#define BUTTON_4 12
 #define DEBOUNCE_TIME 20
 #define NUMBER_OF_DIFFICULTIES 4
 #define ROUND_TIME 40000
