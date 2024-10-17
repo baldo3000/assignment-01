@@ -60,11 +60,11 @@ void reset()
   led2State = false;
   led3State = false;
   led4State = false;
+  interrupts();
   digitalWrite(LED_1_PIN, LOW);
   digitalWrite(LED_2_PIN, LOW);
   digitalWrite(LED_3_PIN, LOW);
   digitalWrite(LED_4_PIN, LOW);
-  interrupts();
 }
 
 void home()
@@ -74,11 +74,8 @@ void home()
   // TODO start when a button is clicked
   noInterrupts();
   bool curLed1State = led1State;
-  bool curLed2State = led2State;
-  bool curLed3State = led3State;
-  bool curLed4State = led4State;
   interrupts();
-  if (curLed1State || curLed2State || curLed3State || curLed4State)
+  if (curLed1State)
   {
     state = START;
     digitalWrite(LED_RED, LOW);
