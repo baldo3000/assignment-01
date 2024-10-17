@@ -11,6 +11,21 @@ extern volatile bool led2State;
 extern volatile bool led3State;
 extern volatile bool led4State;
 
+
+int brightness = 0; // how bright the LED is
+int fadeAmount = 25; // how many points to fade the LED by
+
+// the loop routine runs over and over again forever:
+void pulsingLight() { 
+
+ analogWrite(LED_RED, brightness); 
+
+ brightness = brightness + fadeAmount;
+ // reverse the direction of the fading at the ends of the fade: 
+ if (brightness <= 0 || brightness >= 255) {
+ fadeAmount = -fadeAmount ; 
+ }
+ }
 void button1_handler()
 {
     // static long prevts = millis();

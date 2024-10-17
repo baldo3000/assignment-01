@@ -75,7 +75,7 @@ void reset()
 void home()
 {
   welcomeMessage(lcd);
-  // TODO pulse red led
+  pulsingLight();
   // TODO start when a button is clicked
   noInterrupts();
   bool curLed1State = led1State;
@@ -86,6 +86,7 @@ void home()
   if (curLed1State || curLed2State || curLed3State || curLed4State)
   {
     state = START;
+    digitalWrite(LED_RED, LOW);
   }
 }
 
@@ -112,9 +113,6 @@ void start()
 void newRound()
 {
 
-  
-  // TODO randomize new turn number
-  // TODO calculate new turn max time
   currentRound++;
   numberToGuess = rand() % 16;
   reset();
@@ -155,7 +153,6 @@ void selection()
 
 void check()
 {
-  // TODO check player's inputs
   noInterrupts();
   bool curLed1State = led1State;
   bool curLed2State = led2State;
@@ -166,7 +163,7 @@ void check()
   if (guess == numberToGuess)
   {
     Serial.println("Correct number");
-    score += scoreCalculator(1, currentRound);
+    score += scoreCalculator(1, currentRound); //cambiare 1 quando c'è il timer
     state = NEWROUND;
   }
   else

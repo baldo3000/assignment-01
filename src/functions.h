@@ -32,4 +32,5 @@ void startMessage(LiquidCrystal_I2C lcd, int difficulty);
 void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound);
 void roundPassedMessage(LiquidCrystal_I2C lcd, int score);
 void gameOver(LiquidCrystal_I2C lcd, int score);
+void pulsingLight();
 #endif
