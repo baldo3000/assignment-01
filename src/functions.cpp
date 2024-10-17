@@ -73,16 +73,17 @@ int timerCalculator(int difficulty, int level){
 
 //LCD Messages
 void welcomeMessage(LiquidCrystal_I2C lcd){
-    lcd.clear();
     lcd.setCursor(1, 1); // Set the cursor on the third column and first row.
-    lcd.print("“Welcome to GMB!");
+    lcd.print("Welcome to GMB!");
     lcd.setCursor(1, 2);
-    lcd.print("Press B1 to Start”");
+    lcd.print("Press B1 to Start");
 }
 void startMessage(LiquidCrystal_I2C lcd, int difficulty){
     lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Game started with");
     lcd.setCursor(0, 1);
-    lcd.print("Game started with difficulty: ");
+    lcd.print("difficulty: ");
     lcd.print(difficulty);
     lcd.setCursor(4, 2);
     lcd.print("3_");
@@ -94,15 +95,17 @@ void startMessage(LiquidCrystal_I2C lcd, int difficulty){
 }
 void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound){
     lcd.clear();
-    lcd.setCursor(5, 1);
+    lcd.setCursor(5, 0);
     lcd.print("GO!");
-    lcd.setCursor(2, 2);
+    lcd.setCursor(0, 1);
     lcd.print("Round ");
     lcd.print(currentRound);
-    lcd.print(" ! Convert number ");
+    lcd.print(" ! Convert ");
     lcd.print(number);
-    lcd.setCursor(2, 3);
-    lcd.print(" to binary using the buttons 1-4");
+    lcd.setCursor(0, 2);
+    lcd.print("to binary using");
+    lcd.setCursor(0, 3);
+    lcd.print("the buttons 1-4");
 }
 
 void roundPassedMessage(LiquidCrystal_I2C lcd, int score){
@@ -117,14 +120,19 @@ void gameOver(LiquidCrystal_I2C lcd, int score){
     delay(1000);
     digitalWrite(2, LOW);
     lcd.setCursor(2, 1);
-    lcd.print("Game Over - Final Score ");
+    lcd.print("Game Over -");
+    lcd.setCursor(2, 2);
+    lcd.print("Final Score ");
     lcd.print(score);
     delay(8000);
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Oh look at little ");
     lcd.setCursor(0, 2);
-    lcd.print("Oh look at little goblin junior,");
-    lcd.setCursor(3, 2);
+    lcd.print("goblin junior,");
+    lcd.setCursor(0, 3);
     lcd.print("gonna cry?");
-    delay(2000);
+    delay(2000); 
     lcd.clear();
     lcd.flush();
 
