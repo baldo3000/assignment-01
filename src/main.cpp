@@ -5,12 +5,7 @@
 #include <EnableInterrupt.h>
 #include "functions.h"
 
-
-
-LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4); 
-
-
-
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 20, 4);
 
 enum State
 {
@@ -53,7 +48,7 @@ void setup()
   enableInterrupt(BUTTON_4, button4_handler, FALLING);
   difficulty = 1;
   srand((time(NULL)));
-  
+
   lcd.init();
   lcd.backlight();
 }
@@ -97,9 +92,7 @@ void sleep()
 
 void start()
 {
-  
-  
-  
+
   // DONE starts round 1
   currentRound = 0;
   score = 0;
@@ -129,7 +122,7 @@ void newRound()
 
 void selection()
 {
- 
+
   // DONE player selects leds with buttons
   // DONE if time ended check inputs
   if (millis() - turnStartTime > roundTime)
@@ -163,7 +156,7 @@ void check()
   if (guess == numberToGuess)
   {
     Serial.println("Correct number");
-    score += scoreCalculator(1, currentRound); //cambiare 1 quando c'è il timer
+    score += scoreCalculator(1, currentRound); // cambiare 1 quando c'è il timer
     state = NEWROUND;
   }
   else
