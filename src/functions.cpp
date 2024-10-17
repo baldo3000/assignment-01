@@ -12,7 +12,7 @@ extern volatile bool led3State;
 extern volatile bool led4State;
 
 int brightness = 0;  // how bright the LED is
-int fadeAmount = 5; // how many points to fade the LED by
+int fadeAmount = 15; // how many points to fade the LED by
 
 // the loop routine runs over and over again forever:
 void pulsingLight()

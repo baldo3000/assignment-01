@@ -3,6 +3,8 @@
 #include <time.h>
 #include <Arduino.h>
 #include <EnableInterrupt.h>
+#include <TimerOne.h>
+#include <avr/sleep.h>
 #include "functions.h"
 
 LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 20, 4);
@@ -22,6 +24,7 @@ volatile bool led1State;
 volatile bool led2State;
 volatile bool led3State;
 volatile bool led4State;
+volatile bool timerFlag;
 int difficulty;
 int currentRound;
 int numberToGuess;
@@ -29,6 +32,10 @@ long turnStartTime;
 int roundTime;
 int score;
 State state = HOME;
+
+void reset();
+void sleep();
+
 void setup()
 {
   Serial.begin(9600);
@@ -51,15 +58,49 @@ void setup()
 
   lcd.init();
   lcd.backlight();
+
+  Timer1.initialize(10000000); // 10 seconds
+  reset();
+}
+
+void timerHandler()
+{
+  timerFlag = true;
+}
+
+void wakeUp() {}
+
+void sleep()
+{
+  Serial.println("Going sleep");
+  Serial.flush();
+
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  sleep_enable();
+  lcd.noBacklight();
+  lcd.clear();
+  analogWrite(LED_RED, 0);
+  enableInterrupt(BUTTON_1, wakeUp, FALLING);
+
+  sleep_mode();
+
+  sleep_disable();
+  lcd.backlight();
+  Serial.println("Woke up");
+  delay(200);
+  enableInterrupt(BUTTON_1, button1_handler, FALLING);
 }
 
 void reset()
 {
+  Timer1.attachInterrupt(timerHandler);
+  delay(100);
   noInterrupts();
   led1State = false;
   led2State = false;
   led3State = false;
   led4State = false;
+  timerFlag = false;
   interrupts();
   digitalWrite(LED_1_PIN, LOW);
   digitalWrite(LED_2_PIN, LOW);
@@ -69,22 +110,28 @@ void reset()
 
 void home()
 {
-  welcomeMessage(lcd);
-  pulsingLight();
-  // TODO start when a button is clicked
   noInterrupts();
   bool curLed1State = led1State;
+  bool currentTimerFlag = timerFlag;
   interrupts();
-  if (curLed1State)
+  if (currentTimerFlag)
   {
-    state = START;
-    digitalWrite(LED_RED, LOW);
+    noInterrupts();
+    timerFlag = !timerFlag;
+    interrupts();
+    sleep();
   }
-}
-
-void sleep()
-{
-  // TODO goin sleep
+  else
+  {
+    welcomeMessage(lcd);
+    pulsingLight();
+    if (curLed1State)
+    {
+      state = START;
+      digitalWrite(LED_RED, LOW);
+      Timer1.detachInterrupt();
+    }
+  }
 }
 
 void start()
@@ -119,7 +166,6 @@ void newRound()
 
 void selection()
 {
-
   // DONE player selects leds with buttons
   // DONE if time ended check inputs
   if (millis() - turnStartTime > 10000)
