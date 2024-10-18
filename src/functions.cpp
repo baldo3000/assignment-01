@@ -6,11 +6,13 @@ long prevts1 = 0;
 long prevts2 = 0;
 long prevts3 = 0;
 long prevts4 = 0;
+long prevtsCheck = 0;
 
 extern volatile bool led1State;
 extern volatile bool led2State;
 extern volatile bool led3State;
 extern volatile bool led4State;
+extern volatile bool checkNumber;
 
 int brightness = 0;  // how bright the LED is
 int fadeAmount = 15; // how many points to fade the LED by
@@ -69,6 +71,16 @@ void button4_handler()
     {
         prevts4 = ts;
         led4State = !led4State;
+    }
+}
+
+void buttonCheck_handler()
+{
+    long ts = millis();
+    if (ts - prevtsCheck > DEBOUNCE_TIME)
+    {
+        prevtsCheck = ts;
+        checkNumber = true;
     }
 }
 

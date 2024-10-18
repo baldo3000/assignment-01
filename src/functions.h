@@ -16,7 +16,8 @@
 #define BUTTON_2 10
 #define BUTTON_3 11
 #define BUTTON_4 12
-#define DEBOUNCE_TIME 20
+#define BUTTON_CHECK 3
+#define DEBOUNCE_TIME 50
 #define NUMBER_OF_DIFFICULTIES 4
 #define ROUND_TIME 40000
 
@@ -24,6 +25,7 @@ void button1_handler();
 void button2_handler();
 void button3_handler();
 void button4_handler();
+void buttonCheck_handler();
 double myMap(double x, double in_min, double in_max, double out_min, double out_max);
 int selectedDifficulty();
 int scoreCalculator(int time, int level);

@@ -25,6 +25,7 @@ volatile bool led2State;
 volatile bool led3State;
 volatile bool led4State;
 volatile bool timerFlag;
+volatile bool checkNumber;
 int difficulty;
 int currentRound;
 int numberToGuess;
@@ -34,7 +35,7 @@ int score;
 State state = HOME;
 
 void reset();
-void sleep();
+void timerHandler();
 
 void setup()
 {
@@ -53,6 +54,7 @@ void setup()
   enableInterrupt(BUTTON_2, button2_handler, FALLING);
   enableInterrupt(BUTTON_3, button3_handler, FALLING);
   enableInterrupt(BUTTON_4, button4_handler, FALLING);
+  enableInterrupt(BUTTON_CHECK, buttonCheck_handler, FALLING);
   difficulty = 1;
   srand((time(NULL)));
 
@@ -60,6 +62,8 @@ void setup()
   lcd.backlight();
 
   Timer1.initialize(10000000); // 10 seconds
+  Timer1.attachInterrupt(timerHandler);
+  delay(100);
   reset();
 }
 
@@ -93,14 +97,13 @@ void sleep()
 
 void reset()
 {
-  Timer1.attachInterrupt(timerHandler);
-  delay(100);
   noInterrupts();
   led1State = false;
   led2State = false;
   led3State = false;
   led4State = false;
   timerFlag = false;
+  checkNumber = false;
   interrupts();
   digitalWrite(LED_1_PIN, LOW);
   digitalWrite(LED_2_PIN, LOW);
@@ -147,7 +150,6 @@ void start()
 
 void newRound()
 {
-
   currentRound++;
   numberToGuess = rand() % 16;
   reset();
@@ -164,18 +166,24 @@ void newRound()
 
 void selection()
 {
+  noInterrupts();
+  bool curLed1State = led1State;
+  bool curLed2State = led2State;
+  bool curLed3State = led3State;
+  bool curLed4State = led4State;
+  bool curCheckNumber = checkNumber;
+  interrupts();
   if (millis() - turnStartTime > 10000)
   {
     state = CHECK;
   }
+  else if (curCheckNumber)
+  {
+    Serial.println("Checking number");
+    state = CHECK;
+  }
   else
   {
-    noInterrupts();
-    bool curLed1State = led1State;
-    bool curLed2State = led2State;
-    bool curLed3State = led3State;
-    bool curLed4State = led4State;
-    interrupts();
     digitalWrite(LED_1_PIN, curLed1State);
     digitalWrite(LED_2_PIN, curLed2State);
     digitalWrite(LED_3_PIN, curLed3State);
@@ -212,6 +220,8 @@ void gameOver()
 
   Serial.println("Game over!");
   reset();
+  Timer1.attachInterrupt(timerHandler);
+  delay(100);
   state = HOME;
 }
 
