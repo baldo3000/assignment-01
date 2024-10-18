@@ -24,7 +24,7 @@ volatile bool led1State;
 volatile bool led2State;
 volatile bool led3State;
 volatile bool led4State;
-volatile bool timerFlag;
+volatile long timerCounter;
 volatile bool checkNumber;
 int difficulty;
 int currentRound;
@@ -61,15 +61,16 @@ void setup()
   lcd.init();
   lcd.backlight();
 
-  Timer1.initialize(10000000); // 10 seconds
+  Timer1.initialize(100000); // 100 milliseconds
   Timer1.attachInterrupt(timerHandler);
-  delay(100);
+  Timer1.restart();
+  // delay(200);
   reset();
 }
 
 void timerHandler()
 {
-  timerFlag = true;
+  timerCounter = timerCounter + 100;
 }
 
 void wakeUp() {}
@@ -91,7 +92,7 @@ void sleep()
   sleep_disable();
   lcd.backlight();
   Serial.println("Woke up");
-  delay(200);
+  delay(300);
   enableInterrupt(BUTTON_1, button1_handler, FALLING);
 }
 
@@ -102,7 +103,7 @@ void reset()
   led2State = false;
   led3State = false;
   led4State = false;
-  timerFlag = false;
+  timerCounter = 0L;
   checkNumber = false;
   interrupts();
   digitalWrite(LED_1_PIN, LOW);
@@ -113,14 +114,15 @@ void reset()
 
 void home()
 {
+  Serial.println("Home");
   noInterrupts();
   bool curLed1State = led1State;
-  bool currentTimerFlag = timerFlag;
+  long currentTimerCounter = timerCounter;
   interrupts();
-  if (currentTimerFlag)
+  if (currentTimerCounter >= 10000)
   {
     noInterrupts();
-    timerFlag = !timerFlag;
+    timerCounter = 0;
     interrupts();
     sleep();
   }
@@ -219,9 +221,10 @@ void gameOver()
   // TODO resets game
 
   Serial.println("Game over!");
-  reset();
   Timer1.attachInterrupt(timerHandler);
-  delay(100);
+  Timer1.restart();
+  delay(200);
+  reset();
   state = HOME;
 }
 
