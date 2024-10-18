@@ -114,7 +114,6 @@ void reset()
 
 void home()
 {
-  Serial.println("Home");
   noInterrupts();
   bool curLed1State = led1State;
   long currentTimerCounter = timerCounter;
