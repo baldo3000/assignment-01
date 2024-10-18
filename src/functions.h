@@ -24,6 +24,7 @@ void button1_handler();
 void button2_handler();
 void button3_handler();
 void button4_handler();
+double myMap(double x, double in_min, double in_max, double out_min, double out_max);
 int selectedDifficulty();
 int scoreCalculator(int time, int level);
 int timerCalculator(int difficulty, int level);

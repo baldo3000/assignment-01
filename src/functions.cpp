@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <math.h>
 #include "functions.h"
 
 long prevts1 = 0;
@@ -70,9 +71,17 @@ void button4_handler()
         led4State = !led4State;
     }
 }
+
+double myMap(double x, double in_min, double in_max, double out_min, double out_max)
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 int selectedDifficulty()
 {
-    return abs(map(analogRead(POTENTIOMETER), 0, 1023, 1, NUMBER_OF_DIFFICULTIES));
+    int x = (round)(myMap(analogRead(POTENTIOMETER), 0, 1023, 1, NUMBER_OF_DIFFICULTIES)) + 0.5;
+    Serial.println(x);
+    return x;
 }
 
 int scoreCalculator(int time, int level)

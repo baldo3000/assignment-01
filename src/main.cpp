@@ -136,8 +136,6 @@ void home()
 
 void start()
 {
-
-  // DONE starts round 1
   currentRound = 0;
   score = 0;
   difficulty = selectedDifficulty();
@@ -166,8 +164,6 @@ void newRound()
 
 void selection()
 {
-  // DONE player selects leds with buttons
-  // DONE if time ended check inputs
   if (millis() - turnStartTime > 10000)
   {
     state = CHECK;
