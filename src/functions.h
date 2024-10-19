@@ -19,7 +19,7 @@
 #define BUTTON_CHECK 3
 #define DEBOUNCE_TIME 50
 #define NUMBER_OF_DIFFICULTIES 4
-#define ROUND_TIME 40000
+#define ROUND_TIME 20000
 
 void button1_handler();
 void button2_handler();
@@ -28,12 +28,14 @@ void button4_handler();
 void buttonCheck_handler();
 double myMap(double x, double in_min, double in_max, double out_min, double out_max);
 int selectedDifficulty();
-int scoreCalculator(int time, int level);
+int scoreCalculator(int time, int level, int difficulty);
 int timerCalculator(int difficulty, int level);
 void welcomeMessage(LiquidCrystal_I2C lcd);
 void startMessage(LiquidCrystal_I2C lcd, int difficulty);
-void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound);
+void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound, int time);
 void roundPassedMessage(LiquidCrystal_I2C lcd, int score);
 void gameOver(LiquidCrystal_I2C lcd, int score);
+void checkMessage(LiquidCrystal_I2C lcd, int time);
+void timeOutMessage(LiquidCrystal_I2C lcd);
 void pulsingLight();
 #endif

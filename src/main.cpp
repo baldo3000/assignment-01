@@ -31,6 +31,7 @@ int currentRound;
 int numberToGuess;
 long turnStartTime;
 int roundTime;
+float timeLeft;
 int score;
 State state = HOME;
 
@@ -57,7 +58,7 @@ void setup()
   enableInterrupt(BUTTON_CHECK, buttonCheck_handler, FALLING);
   difficulty = 1;
   srand((time(NULL)));
-
+  timeLeft=0;
   lcd.init();
   lcd.backlight();
 
@@ -154,7 +155,7 @@ void newRound()
   currentRound++;
   numberToGuess = rand() % 16;
   reset();
-  goMessage(lcd, numberToGuess, currentRound);
+  
   Serial.print("Round ");
   Serial.print(currentRound);
   Serial.print(" ! Convert number ");
@@ -162,6 +163,10 @@ void newRound()
   Serial.println(" to binary using the buttons 1-4");
   turnStartTime = millis();
   roundTime = timerCalculator(difficulty, currentRound);
+  goMessage(lcd, numberToGuess, currentRound, roundTime);
+    Serial.print("RoundTime: ");
+  Serial.println(roundTime);
+  timeLeft=0;
   state = SELECTION;
 }
 
@@ -174,12 +179,15 @@ void selection()
   bool curLed4State = led4State;
   bool curCheckNumber = checkNumber;
   interrupts();
-  if (millis() - turnStartTime > 10000)
+  if (millis() - turnStartTime > roundTime)
   {
+    timeOutMessage(lcd);
     state = CHECK;
   }
   else if (curCheckNumber)
   {
+    timeLeft=roundTime - (millis() - turnStartTime);
+    checkMessage(lcd, timeLeft);
     Serial.println("Checking number");
     state = CHECK;
   }
@@ -203,8 +211,9 @@ void check()
   int guess = curLed1State * LED_1_VALUE + curLed2State * LED_2_VALUE + curLed3State * LED_3_VALUE + curLed4State * LED_4_VALUE;
   if (guess == numberToGuess)
   {
+    roundPassedMessage(lcd, scoreCalculator(timeLeft, currentRound, difficulty));
     Serial.println("Correct number");
-    score += scoreCalculator(1, currentRound); // cambiare 1 quando c'è il timer
+    score += scoreCalculator(timeLeft, currentRound, difficulty); 
     state = NEWROUND;
   }
   else

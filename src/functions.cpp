@@ -96,14 +96,16 @@ int selectedDifficulty()
     return x;
 }
 
-int scoreCalculator(int time, int level)
+int scoreCalculator(int time, int level, int difficulty)
 {
-    return level * level * time;
+    float dif = (float)difficulty;
+    float t = (float)time / 1000;
+    return level * level * (t+1) * (dif * dif);
 }
 
 int timerCalculator(int difficulty, int level)
 {
-    return ROUND_TIME / difficulty / (1 + level / 5);
+    return ROUND_TIME / (float)sqrt(difficulty) / (1 + (float)level / 5);
 }
 
 // LCD Messages
@@ -131,18 +133,50 @@ void startMessage(LiquidCrystal_I2C lcd, int difficulty)
     lcd.print("1");
     delay(1000);
 }
+void checkMessage(LiquidCrystal_I2C lcd, int time){
 
-void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound)
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    if(time >= 2000){
+        lcd.print("Preatty fast");
+    }
+    else{
+        lcd.print("Just in time");
+    }
+    lcd.setCursor(0, 1);
+    lcd.print(time/1000);
+    lcd.print(" seconds");
+    lcd.setCursor(0, 2);
+    lcd.print(time%1000);
+    lcd.print(" millis ");
+    lcd.setCursor(0, 3);
+    lcd.print("before time ran out");
+    delay(4000);
+
+}
+void timeOutMessage(LiquidCrystal_I2C lcd){
+    
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("The time is over!!");
+    delay(3000);
+}
+
+void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound, int time)
 {
     lcd.clear();
-    lcd.setCursor(5, 0);
-    lcd.print("GO!");
+    lcd.setCursor(0, 0);
+    lcd.print("GO!: ");
+    lcd.print(time/1000);
+    lcd.print("s ");
+    lcd.print(time%1000);
+    lcd.print("m");
     lcd.setCursor(0, 1);
     lcd.print("Round ");
     lcd.print(currentRound);
     lcd.print(" ! Convert ");
-    lcd.print(number);
     lcd.setCursor(0, 2);
+    lcd.print(number);
     lcd.print("to binary using");
     lcd.setCursor(0, 3);
     lcd.print("the buttons 1-4");
@@ -154,6 +188,7 @@ void roundPassedMessage(LiquidCrystal_I2C lcd, int score)
     lcd.setCursor(2, 1);
     lcd.print("GOOD! Score: ");
     lcd.print(score);
+    delay(3000);
 }
 
 void gameOver(LiquidCrystal_I2C lcd, int score)
