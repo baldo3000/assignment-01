@@ -51,13 +51,14 @@ void setup()
   pinMode(BUTTON_3, INPUT);
   pinMode(BUTTON_4, INPUT);
   pinMode(POTENTIOMETER, INPUT);
+  pinMode(RANDOM_PIN, INPUT);
   enableInterrupt(BUTTON_1, button1_handler, FALLING);
   enableInterrupt(BUTTON_2, button2_handler, FALLING);
   enableInterrupt(BUTTON_3, button3_handler, FALLING);
   enableInterrupt(BUTTON_4, button4_handler, FALLING);
   enableInterrupt(BUTTON_CHECK, buttonCheck_handler, FALLING);
   difficulty = 1;
-  srand(analogRead(A1));
+  srand(analogRead(RANDOM_PIN));
   timeLeft = 0;
   lcd.init();
   lcd.backlight();
@@ -77,9 +78,6 @@ void wakeUp() {}
 
 void sleep()
 {
-  Serial.println("Going sleep");
-  Serial.flush();
-
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
   lcd.noBacklight();
@@ -91,8 +89,7 @@ void sleep()
 
   sleep_disable();
   lcd.backlight();
-  Serial.println("Woke up");
-  delay(300);
+  delay(300); // prevent bouncing starting the game unintentionally
   enableInterrupt(BUTTON_1, button1_handler, FALLING);
 }
 
@@ -144,8 +141,6 @@ void start()
   score = 0;
   difficulty = selectedDifficulty();
   startMessage(lcd, difficulty);
-  Serial.print("Game started with difficulty ");
-  Serial.println(difficulty);
   state = NEWROUND;
 }
 
@@ -154,17 +149,9 @@ void newRound()
   currentRound++;
   numberToGuess = rand() % 16;
   reset();
-
-  Serial.print("Round ");
-  Serial.print(currentRound);
-  Serial.print(" ! Convert number ");
-  Serial.print(numberToGuess);
-  Serial.println(" to binary using the buttons 1-4");
   turnStartTime = millis();
   roundTime = timerCalculator(difficulty, currentRound);
   goMessage(lcd, numberToGuess, currentRound, roundTime);
-  Serial.print("RoundTime: ");
-  Serial.println(roundTime);
   timeLeft = 0;
   state = SELECTION;
 }
@@ -178,7 +165,7 @@ void selection()
   bool curLed4State = led4State;
   bool curCheckNumber = checkNumber;
   interrupts();
-  if (millis() - turnStartTime > roundTime)
+  if ((long)millis() - turnStartTime > roundTime)
   {
     timeOutMessage(lcd);
     state = CHECK;
@@ -187,7 +174,6 @@ void selection()
   {
     timeLeft = roundTime - (millis() - turnStartTime);
     checkMessage(lcd, timeLeft);
-    Serial.println("Checking number");
     state = CHECK;
   }
   else
@@ -211,13 +197,11 @@ void check()
   if (guess == numberToGuess)
   {
     roundPassedMessage(lcd, scoreCalculator(timeLeft, currentRound, difficulty));
-    Serial.println("Correct number");
     score += scoreCalculator(timeLeft, currentRound, difficulty);
     state = NEWROUND;
   }
   else
   {
-    Serial.println("Incorrect number");
     state = GAMEOVER;
   }
 }
@@ -225,7 +209,6 @@ void check()
 void gameOver()
 {
   gameOver(lcd, score);
-  Serial.println("Game over!");
   Timer1.attachInterrupt(timerHandler);
   Timer1.restart();
   delay(200);

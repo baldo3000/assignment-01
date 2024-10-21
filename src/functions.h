@@ -11,6 +11,7 @@
 #define LED_3_VALUE 2
 #define LED_4_VALUE 1
 #define POTENTIOMETER A0
+#define RANDOM_PIN A1
 #define LED_RED 5
 #define BUTTON_1 9
 #define BUTTON_2 10

@@ -17,10 +17,8 @@ extern volatile bool checkNumber;
 int brightness = 0;  // how bright the LED is
 int fadeAmount = 15; // how many points to fade the LED by
 
-// the loop routine runs over and over again forever:
 void pulsingLight()
 {
-
     analogWrite(LED_RED, brightness);
 
     brightness = brightness + fadeAmount;
@@ -89,7 +87,6 @@ double myMap(double x, double in_min, double in_max, double out_min, double out_
 int selectedDifficulty()
 {
     int x = (round)(myMap(analogRead(POTENTIOMETER), 0, 1023, 1, NUMBER_OF_DIFFICULTIES)) + 0.5;
-    Serial.println(x);
     return x;
 }
 
@@ -170,7 +167,7 @@ void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound, int time)
     lcd.print(time / 1000);
     lcd.print("s ");
     lcd.print(time % 1000);
-    lcd.print("m");
+    lcd.print("ms");
     lcd.setCursor(0, 1);
     lcd.print("Round ");
     lcd.print(currentRound);
@@ -204,11 +201,11 @@ void gameOver(LiquidCrystal_I2C lcd, int score)
     lcd.print(score);
     delay(8000);
     lcd.clear();
-    lcd.setCursor(0, 1);
+    lcd.setCursor(0, 0);
     lcd.print("Oh look at little ");
-    lcd.setCursor(0, 2);
+    lcd.setCursor(0, 1);
     lcd.print("goblin junior,");
-    lcd.setCursor(0, 3);
+    lcd.setCursor(0, 2);
     lcd.print("gonna cry?");
     delay(2000);
     lcd.clear();
