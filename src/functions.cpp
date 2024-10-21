@@ -33,7 +33,6 @@ void pulsingLight()
 
 void button1_handler()
 {
-    // static long prevts = millis();
     long ts = millis();
     if (ts - prevts1 > DEBOUNCE_TIME)
     {
@@ -44,7 +43,6 @@ void button1_handler()
 
 void button2_handler()
 {
-    // static long prevts = millis();
     long ts = millis();
     if (ts - prevts2 > DEBOUNCE_TIME)
     {
@@ -55,7 +53,6 @@ void button2_handler()
 
 void button3_handler()
 {
-    // static long prevts = millis();
     long ts = millis();
     if (ts - prevts3 > DEBOUNCE_TIME)
     {
@@ -100,7 +97,7 @@ int scoreCalculator(int time, int level, int difficulty)
 {
     float dif = (float)difficulty;
     float t = (float)time / 1000;
-    return level * level * (t+1) * (dif * dif);
+    return level * level * (t + 1) * (dif * dif);
 }
 
 int timerCalculator(int difficulty, int level)
@@ -133,32 +130,35 @@ void startMessage(LiquidCrystal_I2C lcd, int difficulty)
     lcd.print("1");
     delay(1000);
 }
-void checkMessage(LiquidCrystal_I2C lcd, int time){
+void checkMessage(LiquidCrystal_I2C lcd, int time)
+{
 
     lcd.clear();
     lcd.setCursor(0, 0);
-    if(time >= 2000){
-        lcd.print("Preatty fast");
+    if (time >= 2000)
+    {
+        lcd.print("Pretty fast!");
     }
-    else{
-        lcd.print("Just in time");
+    else
+    {
+        lcd.print("Just in time!");
     }
     lcd.setCursor(0, 1);
-    lcd.print(time/1000);
+    lcd.print(time / 1000);
     lcd.print(" seconds");
     lcd.setCursor(0, 2);
-    lcd.print(time%1000);
+    lcd.print(time % 1000);
     lcd.print(" millis ");
     lcd.setCursor(0, 3);
     lcd.print("before time ran out");
     delay(4000);
-
 }
-void timeOutMessage(LiquidCrystal_I2C lcd){
-    
+void timeOutMessage(LiquidCrystal_I2C lcd)
+{
+
     lcd.clear();
     lcd.setCursor(0, 1);
-    lcd.print("The time is over!!");
+    lcd.print("Time is over!!");
     delay(3000);
 }
 
@@ -167,9 +167,9 @@ void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound, int time)
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("GO!: ");
-    lcd.print(time/1000);
+    lcd.print(time / 1000);
     lcd.print("s ");
-    lcd.print(time%1000);
+    lcd.print(time % 1000);
     lcd.print("m");
     lcd.setCursor(0, 1);
     lcd.print("Round ");
@@ -177,7 +177,7 @@ void goMessage(LiquidCrystal_I2C lcd, int number, int currentRound, int time)
     lcd.print(" ! Convert ");
     lcd.setCursor(0, 2);
     lcd.print(number);
-    lcd.print("to binary using");
+    lcd.print(" to binary using");
     lcd.setCursor(0, 3);
     lcd.print("the buttons 1-4");
 }

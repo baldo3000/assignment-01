@@ -57,15 +57,14 @@ void setup()
   enableInterrupt(BUTTON_4, button4_handler, FALLING);
   enableInterrupt(BUTTON_CHECK, buttonCheck_handler, FALLING);
   difficulty = 1;
-  srand((time(NULL)));
-  timeLeft=0;
+  srand(analogRead(A1));
+  timeLeft = 0;
   lcd.init();
   lcd.backlight();
 
   Timer1.initialize(100000); // 100 milliseconds
   Timer1.attachInterrupt(timerHandler);
   Timer1.restart();
-  // delay(200);
   reset();
 }
 
@@ -155,7 +154,7 @@ void newRound()
   currentRound++;
   numberToGuess = rand() % 16;
   reset();
-  
+
   Serial.print("Round ");
   Serial.print(currentRound);
   Serial.print(" ! Convert number ");
@@ -164,9 +163,9 @@ void newRound()
   turnStartTime = millis();
   roundTime = timerCalculator(difficulty, currentRound);
   goMessage(lcd, numberToGuess, currentRound, roundTime);
-    Serial.print("RoundTime: ");
+  Serial.print("RoundTime: ");
   Serial.println(roundTime);
-  timeLeft=0;
+  timeLeft = 0;
   state = SELECTION;
 }
 
@@ -186,7 +185,7 @@ void selection()
   }
   else if (curCheckNumber)
   {
-    timeLeft=roundTime - (millis() - turnStartTime);
+    timeLeft = roundTime - (millis() - turnStartTime);
     checkMessage(lcd, timeLeft);
     Serial.println("Checking number");
     state = CHECK;
@@ -213,7 +212,7 @@ void check()
   {
     roundPassedMessage(lcd, scoreCalculator(timeLeft, currentRound, difficulty));
     Serial.println("Correct number");
-    score += scoreCalculator(timeLeft, currentRound, difficulty); 
+    score += scoreCalculator(timeLeft, currentRound, difficulty);
     state = NEWROUND;
   }
   else
@@ -226,8 +225,6 @@ void check()
 void gameOver()
 {
   gameOver(lcd, score);
-  // TODO resets game
-
   Serial.println("Game over!");
   Timer1.attachInterrupt(timerHandler);
   Timer1.restart();
