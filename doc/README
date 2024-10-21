@@ -1,0 +1,1 @@
+During this project an additional button was introduced, despite not being required in the assignement. If pressed during number guess time, it skips the additional time left and proceed to check the input number immediately. Note that the faster the check button is pressed, the higher the score assigned will be, provided the number is correct.
