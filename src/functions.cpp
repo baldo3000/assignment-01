@@ -191,9 +191,9 @@ void roundPassedMessage(LiquidCrystal_I2C lcd, int score)
 void gameOver(LiquidCrystal_I2C lcd, int score)
 {
     lcd.clear();
-    digitalWrite(2, HIGH);
+    digitalWrite(LED_RED, HIGH);
     delay(1000);
-    digitalWrite(2, LOW);
+    digitalWrite(LED_RED, LOW);
     lcd.setCursor(2, 1);
     lcd.print("Game Over -");
     lcd.setCursor(2, 2);

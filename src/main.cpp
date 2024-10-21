@@ -1,3 +1,9 @@
+/*
+ * Authors:
+ * - Andrea Baldazzi 0001071149
+ * - Federico De Leonardis 0001071569
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
